@@ -1,5 +1,4 @@
-﻿using Controls.Models;
-using System;
+﻿using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -9,10 +8,7 @@ namespace Controls
 {
     public class ComboboxDataGridColumn : DataGridTextColumn
     {
-        DataGrid _grid;
-        ComboBox _box;
-        TextBox _searchBox;
-
+        #region Generate Elements
         protected override FrameworkElement GenerateElement(DataGridCell cell, object dataItem)
         {
             TextBlock box = new TextBlock();
@@ -23,6 +19,7 @@ namespace Controls
         protected override FrameworkElement GenerateEditingElement(DataGridCell cell, object dataItem)
         {
             _grid = ((ComboboxDataGridColumn)cell.Column).DataGridOwner;
+
             _box = new ComboBox { DisplayMemberPath = DisplaymemberPathCombobox, Style = (Style)App.Current.FindResource("SearchComboboxStyle") };
 
             if (ItemSourceInParentDataContext)
@@ -35,39 +32,55 @@ namespace Controls
             _box.IsDropDownOpen = true;
             _box.ApplyTemplate();
 
-            _searchBox = (TextBox)_box.Template.FindName("PART_Filterbox", _box);
+            TextBox searchBox = (TextBox)_box.Template.FindName("PART_Filterbox", _box);
             if (!SearchEnabled)
-                _searchBox.Visibility = Visibility.Collapsed;
+                searchBox.Visibility = Visibility.Collapsed;
             else
             {
-                _searchBox.TextChanged += FilterChanged;
+                BindingOperations.SetBinding(searchBox, TextBox.TextProperty, new Binding(nameof(_searchString))
+                {
+                    Mode = BindingMode.TwoWay,
+                    Delay = 250,
+                    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
+                    Source = this
+                });
 
                 Dispatcher.BeginInvoke((Action)delegate
                 {
-                    _searchBox.Focus();
+                    searchBox.Focus();
                 }, DispatcherPriority.ApplicationIdle);
             }
 
             _box.DropDownClosed += ComboBoxDropDownClosed;
             return _box;
         }
+        #endregion
 
+        #region Events
         private void ComboBoxDropDownClosed(object sender, EventArgs e)
         {
             CollectionViewSource.GetDefaultView(_box.ItemsSource).Filter = null;
-            _grid.CommitEdit();
-            _grid.CommitEdit();
+            _grid.CommitEdit(DataGridEditingUnit.Cell, true);
+            _searchString = "";
         }
 
-        private void FilterChanged(object sender, TextChangedEventArgs e)
+        private void FilterChanged()
         {
             var sourceView = CollectionViewSource.GetDefaultView(_box.ItemsSource);
             if (sourceView.Filter == null)
-                sourceView.Filter = p => ((BaseObject)p).Name.ToLower().Contains(_searchBox.Text.ToLower());
+            {
+                sourceView.Filter = p => String.IsNullOrEmpty(_searchString) ||
+                    (Reflection.GetValue(p, SearchMemberPath, out object filterProperty, out _) ?
+                    ((string)filterProperty).ToLower().Contains(_searchString.ToLower()) : false);
+            }
             else
+            {
                 sourceView.Refresh();
+            }
         }
+        #endregion
 
+        #region DependencyProperties
         public string DisplaymemberPath { get { return (string)GetValue(DisplaymemberPathProperty); } set { SetValue(DisplaymemberPathProperty, value); } }
         public static readonly DependencyProperty DisplaymemberPathProperty =
             DependencyProperty.Register("DisplaymemberPath", typeof(string), typeof(ComboboxDataGridColumn), new PropertyMetadata("Name"));
@@ -91,5 +104,13 @@ namespace Controls
         public bool SearchEnabled { get { return (bool)GetValue(SearchEnabledProperty); } set { SetValue(SearchEnabledProperty, value); } }
         public static readonly DependencyProperty SearchEnabledProperty =
             DependencyProperty.Register("SearchEnabled", typeof(bool), typeof(ComboboxDataGridColumn), new PropertyMetadata(true));
+        #endregion
+
+        #region Fields + Properties
+        public string _searchString { get { return _searchField; } set { _searchField = value; FilterChanged(); } }
+        DataGrid _grid;
+        ComboBox _box;
+        private string _searchField;
+        #endregion
     }
 }

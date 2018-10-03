@@ -57,6 +57,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Controls2\ComboboxDataGridColumn.cs" />
+    <Compile Include="Helper\Reflection.cs" />
     <Compile Include="Models\BaseObject.cs" />
     <Compile Include="Models\Chor.cs" />
     <Compile Include="Models\Person.cs" />

@@ -34,7 +34,7 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
                 <DataGridTextColumn Binding="{Binding Name}" Header="Name" />
-                <local:ComboboxDataGridColumn Header="Chor" DisplaymemberPath="Chor.Name" ItemsourcePath="Chöre" Binding="{Binding Chor}" ItemSourceInParentDataContext="True" SearchEnabled="True" SortMemberPath="Chor.Name" />
+                <local:ComboboxDataGridColumn Header="Chor" DisplaymemberPath="Chor.Name" ItemsourcePath="Chöre" Binding="{Binding Chor, UpdateSourceTrigger=PropertyChanged}" ItemSourceInParentDataContext="True" SortMemberPath="Chor.Name" />
                 <DataGridTextColumn Binding="{Binding Chor.Name, UpdateSourceTrigger=PropertyChanged}" Header="Name" />
 
             </DataGrid.Columns>

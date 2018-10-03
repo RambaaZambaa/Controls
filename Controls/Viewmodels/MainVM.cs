@@ -12,25 +12,27 @@ namespace Controls.Viewmodels
         public MainVM()
         {
             ShowPopupCommand = new RelayCommand(p => PopupVisible = !PopupVisible);
-            Chöre = new List<Chor> { new Chor { Id = 1, Name = "Großer Chor" }, new Chor { Id = 2, Name = "Jugendchor" }, new Chor { Id = 2, Name = "Kinderchor" } };
-            Persons = new List<Person>();
+
+            for (int i = 0; i < 1000; i++)
+            {
+                Chöre.Add(new Chor { Name = $"Chor {i}", HasChanges = false });
+            }
 
             Random r = new Random();
 
-            for (int i = 0; i < 100000; i++)
+            for (int i = 0; i < 10000; i++)
             {
-                Persons.Add(new Person { Name = $"Name {i}", Chor = Chöre[r.Next(0, 3)], HasChanges = false });
+                Persons.Add(new Person { Name = $"Name {i}", Chor = Chöre[r.Next(0, 1000)], HasChanges = false });
             }
 
-            Persons[0].Chor = null;
         }
         public bool PopupVisible { get { return _PopupVisible; } set { SetProperty(ref _PopupVisible, value); } }
         public RelayCommand ShowPopupCommand { get; private set; }
 
         private bool _PopupVisible;
 
-        public List<Chor> Chöre { get; set; }
-        public List<Person> Persons { get; set; }
+        public List<Chor> Chöre { get; set; } = new List<Chor>();
+        public List<Person> Persons { get; set; } = new List<Person>();
 
     }
 }
