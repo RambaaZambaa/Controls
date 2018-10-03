@@ -23,7 +23,8 @@
         </controls:PopupControl>
         <Button Command="{Binding ShowPopupCommand}" VerticalAlignment="Center" HorizontalAlignment="Center" Content="Show Popup" Padding="10" />
 
-        <DataGrid AutoGenerateColumns="False" Grid.Row="1" ItemsSource="{Binding Persons}" FontSize="18" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
+        <DataGrid AutoGenerateColumns="False" Grid.Row="1" ItemsSource="{Binding Persons}" FontSize="18" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling"
+                  HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray" CanUserAddRows="False">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="Changed">
                     <DataGridTemplateColumn.CellTemplate>
@@ -33,7 +34,7 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
                 <DataGridTextColumn Binding="{Binding Name}" Header="Name" />
-                <local:ComboboxDataGridColumn Header="Chor" DisplaymemberPath="Chor.Name" ItemsourcePath="Chöre" Binding="{Binding Chor}" ItemSourceInParentDataContext="True" />
+                <local:ComboboxDataGridColumn Header="Chor" DisplaymemberPath="Chor.Name" ItemsourcePath="Chöre" Binding="{Binding Chor}" ItemSourceInParentDataContext="True" SearchEnabled="True" SortMemberPath="Chor.Name" />
                 <DataGridTextColumn Binding="{Binding Chor.Name, UpdateSourceTrigger=PropertyChanged}" Header="Name" />
 
             </DataGrid.Columns>

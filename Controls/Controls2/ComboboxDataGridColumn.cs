@@ -3,49 +3,67 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Threading;
 
 namespace Controls
 {
     public class ComboboxDataGridColumn : DataGridTextColumn
     {
+        DataGrid _grid;
+        ComboBox _box;
+        TextBox _searchBox;
+
         protected override FrameworkElement GenerateElement(DataGridCell cell, object dataItem)
         {
             TextBlock box = new TextBlock();
+            box.Padding = new Thickness(4, 2, 4, 2);
             BindingOperations.SetBinding(box, TextBlock.TextProperty, new Binding(DisplaymemberPath));
             return box;
         }
         protected override FrameworkElement GenerateEditingElement(DataGridCell cell, object dataItem)
         {
-            ComboBox cb = new ComboBox();
-            cb.Style = (Style)App.Current.FindResource("SearchComboboxStyle");
-            cb.DisplayMemberPath = DisplaymemberPathCombobox;
+            _grid = ((ComboboxDataGridColumn)cell.Column).DataGridOwner;
+            _box = new ComboBox { DisplayMemberPath = DisplaymemberPathCombobox, Style = (Style)App.Current.FindResource("SearchComboboxStyle") };
 
             if (ItemSourceInParentDataContext)
-                BindingOperations.SetBinding(cb, ComboBox.ItemsSourceProperty, new Binding($"DataContext.{ItemsourcePath}") { Source = ((ComboboxDataGridColumn)cell.Column).DataGridOwner });
+                BindingOperations.SetBinding(_box, ComboBox.ItemsSourceProperty, new Binding($"DataContext.{ItemsourcePath}") { Source = _grid });
             else
-                BindingOperations.SetBinding(cb, ComboBox.ItemsSourceProperty, new Binding(ItemsourcePath));
+                BindingOperations.SetBinding(_box, ComboBox.ItemsSourceProperty, new Binding(ItemsourcePath));
 
-            BindingOperations.SetBinding(cb, ComboBox.SelectedItemProperty, Binding);
-            cb.IsDropDownOpen = true;
+            BindingOperations.SetBinding(_box, ComboBox.SelectedItemProperty, Binding);
 
-            cb.ApplyTemplate();
-            TextBox filterBox = (TextBox)cb.Template.FindName("PART_Filterbox", cb);
-            filterBox.TextChanged += FilterChanged;
-            filterBox.Tag = cb.ItemsSource;
+            _box.IsDropDownOpen = true;
+            _box.ApplyTemplate();
 
-            return cb;
+            _searchBox = (TextBox)_box.Template.FindName("PART_Filterbox", _box);
+            if (!SearchEnabled)
+                _searchBox.Visibility = Visibility.Collapsed;
+            else
+            {
+                _searchBox.TextChanged += FilterChanged;
+
+                Dispatcher.BeginInvoke((Action)delegate
+                {
+                    _searchBox.Focus();
+                }, DispatcherPriority.ApplicationIdle);
+            }
+
+            _box.DropDownClosed += ComboBoxDropDownClosed;
+            return _box;
         }
 
-        private void TemplateApplied()
+        private void ComboBoxDropDownClosed(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            CollectionViewSource.GetDefaultView(_box.ItemsSource).Filter = null;
+            _grid.CommitEdit();
+            _grid.CommitEdit();
         }
 
         private void FilterChanged(object sender, TextChangedEventArgs e)
         {
-            var sourceView = CollectionViewSource.GetDefaultView(((TextBox)sender).Tag);
+            var sourceView = CollectionViewSource.GetDefaultView(_box.ItemsSource);
             if (sourceView.Filter == null)
-                sourceView.Filter = p => ((BaseObject)p).Name.ToLower().Contains(((TextBox)sender).Text.ToLower());
+                sourceView.Filter = p => ((BaseObject)p).Name.ToLower().Contains(_searchBox.Text.ToLower());
             else
                 sourceView.Refresh();
         }
@@ -70,5 +88,8 @@ namespace Controls
         public static readonly DependencyProperty ItemSourceInParentDataContextProperty =
             DependencyProperty.Register("ItemSourceInParentDataContext", typeof(bool), typeof(ComboboxDataGridColumn), new PropertyMetadata(true));
 
+        public bool SearchEnabled { get { return (bool)GetValue(SearchEnabledProperty); } set { SetValue(SearchEnabledProperty, value); } }
+        public static readonly DependencyProperty SearchEnabledProperty =
+            DependencyProperty.Register("SearchEnabled", typeof(bool), typeof(ComboboxDataGridColumn), new PropertyMetadata(true));
     }
 }

@@ -17,10 +17,12 @@ namespace Controls.Viewmodels
 
             Random r = new Random();
 
-            for (int i = 0; i < 1000; i++)
+            for (int i = 0; i < 100000; i++)
             {
-                Persons.Add(new Person { Name = $"Name {i}", Chor = Chöre[r.Next(0, 2)], HasChanges = false });
+                Persons.Add(new Person { Name = $"Name {i}", Chor = Chöre[r.Next(0, 3)], HasChanges = false });
             }
+
+            Persons[0].Chor = null;
         }
         public bool PopupVisible { get { return _PopupVisible; } set { SetProperty(ref _PopupVisible, value); } }
         public RelayCommand ShowPopupCommand { get; private set; }
