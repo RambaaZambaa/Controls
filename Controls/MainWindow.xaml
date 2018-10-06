@@ -8,7 +8,7 @@
         xmlns:controls="clr-namespace:Controls.Controls2"
         mc:Ignorable="d"
         Title="MainWindow" Height="700" Width="800">
-    <Grid Background="LightBlue">
+    <Grid Background="White">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
@@ -24,7 +24,9 @@
         <Button Command="{Binding ShowPopupCommand}" VerticalAlignment="Center" HorizontalAlignment="Center" Content="Show Popup" Padding="10" />
 
         <DataGrid AutoGenerateColumns="False" Grid.Row="1" ItemsSource="{Binding Persons}" FontSize="18" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling"
-                  HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray" CanUserAddRows="False">
+                  HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray" CanUserAddRows="False" 
+                  HorizontalAlignment="Left" Sorting="DataGridSorting" FrozenColumnCount="1" VerticalAlignment="Top"
+                  Style="{DynamicResource CustomDatagridStyle}" Margin="15">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="Changed">
                     <DataGridTemplateColumn.CellTemplate>

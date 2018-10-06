@@ -11,8 +11,6 @@ namespace Controls
             object Parent = null;
             string[] FieldNames = PropertyPath.Split('.');
 
-
-
             foreach (string FieldName in FieldNames)
             {
                 Type CurrentType = Current.GetType();

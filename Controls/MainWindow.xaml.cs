@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,6 +25,17 @@ namespace Controls
         {
             InitializeComponent();
             this.DataContext = new Viewmodels.MainVM();
+        }
+
+        private void DataGridSorting(object sender, DataGridSortingEventArgs e)
+        {
+            DataGridColumn column = e.Column;
+            if (e.Column.SortDirection.HasValue && e.Column.SortDirection.Value == ListSortDirection.Descending)
+            {
+                e.Column.SortDirection = null;
+                ((DataGrid)sender).Items.SortDescriptions.Clear();
+                e.Handled = true;
+            }
         }
     }
 }
