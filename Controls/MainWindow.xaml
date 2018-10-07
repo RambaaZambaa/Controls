@@ -23,24 +23,24 @@
         </controls:PopupControl>
         <Button Command="{Binding ShowPopupCommand}" VerticalAlignment="Center" HorizontalAlignment="Center" Content="Show Popup" Padding="10" />
 
-        <DataGrid AutoGenerateColumns="False" Grid.Row="1" ItemsSource="{Binding Persons}" FontSize="18" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling"
+        <local:AdvancedDataGrid AutoGenerateColumns="False" Grid.Row="1" ItemsSource="{Binding Persons}" FontSize="18" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling"
                   HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray" CanUserAddRows="False" 
                   HorizontalAlignment="Left" Sorting="DataGridSorting" FrozenColumnCount="1" VerticalAlignment="Top"
-                  Style="{DynamicResource CustomDatagridStyle}" Margin="15">
-            <DataGrid.Columns>
-                <DataGridTemplateColumn Header="Changed">
+                  Style="{DynamicResource CustomDatagridStyle}" Margin="15" AlternatingRowBackground="#f3f3f3">
+            <local:AdvancedDataGrid.Columns>
+                <DataGridTemplateColumn Header="Changed" >
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="X" Visibility="{Binding HasChanges, Converter={StaticResource BoolToVisConverter}}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Binding="{Binding Name}" Header="Name" />
+                <DataGridTextColumn Binding="{Binding Name}" Header="Name"  />
                 <local:ComboboxDataGridColumn Header="Chor" DisplaymemberPath="Chor.Name" ItemsourcePath="Chöre" Binding="{Binding Chor, UpdateSourceTrigger=PropertyChanged}" ItemSourceInParentDataContext="True" SortMemberPath="Chor.Name" />
                 <DataGridTextColumn Binding="{Binding Chor.Name, UpdateSourceTrigger=PropertyChanged}" Header="Name" />
 
-            </DataGrid.Columns>
-        </DataGrid>
+            </local:AdvancedDataGrid.Columns>
+        </local:AdvancedDataGrid>
         <ComboBox Style="{DynamicResource SearchComboboxStyle}" />
     </Grid>
 </Window>

@@ -56,8 +56,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls2\AdvancedDataGrid.cs" />
     <Compile Include="Controls2\ComboboxDataGridColumn.cs" />
+    <Compile Include="Controls2\TextBoxWatermark.xaml.cs">
+      <DependentUpon>TextBoxWatermark.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Converter\BaseValueConverter.cs" />
+    <Compile Include="Converter\BooleanToVisiblityConverter.cs" />
     <Compile Include="Helper\Reflection.cs" />
+    <Compile Include="Helper\StringHelper.cs" />
     <Compile Include="Models\BaseObject.cs" />
     <Compile Include="Models\Chor.cs" />
     <Compile Include="Models\Person.cs" />
@@ -69,6 +76,9 @@
     </Compile>
     <Page Include="Controls2\PopupControl.xaml">
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls2\TextBoxWatermark.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MainWindow.xaml">
@@ -113,8 +123,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <Resource Include="Fonts\fa-regular-400.ttf" />
     <Resource Include="Fonts\Font Awesome 5 Free-Regular-400.otf" />
-    <Resource Include="Fonts\Font Awesome 5 Free-Solid-900.otf" />
+    <Resource Include="Fonts\fa-solid-900.ttf" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -123,8 +134,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Converter\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

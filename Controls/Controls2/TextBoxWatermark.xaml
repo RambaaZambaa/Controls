@@ -1,0 +1,36 @@
+﻿<UserControl x:Class="Controls.TextBoxWatermark"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" GotFocus="UC_GotFocus"
+             xmlns:local="clr-namespace:Controls" Loaded="UC_Loaded"
+             mc:Ignorable="d" x:Name="UC"  >
+    <Grid >
+        <TextBox MinWidth="10" Padding="{Binding ElementName=UC, Path=TextBoxPadding}" x:Name="SearchTermTextBox" Text="{Binding Text, ElementName=UC, UpdateSourceTrigger=PropertyChanged}"
+                  BorderThickness="0" Foreground="{Binding ElementName=UC, Path=Foreground}" TextWrapping="{Binding ElementName=UC, Path=TextWrapping, UpdateSourceTrigger=PropertyChanged}"
+                  CaretBrush="{Binding ElementName=UC, Path=Foreground}" Background="Transparent" AcceptsReturn="{Binding ElementName=UC, Path=AcceptsReturn}" FontWeight="{Binding ElementName=UC, Path=FontWeight}"
+                 />
+        <Grid IsHitTestVisible="False" >
+            <Grid.Resources>
+                <Style TargetType="{x:Type Grid}">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Text, ElementName=SearchTermTextBox}" Value="">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Resources>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="{Binding Icon, ElementName=UC, UpdateSourceTrigger=PropertyChanged}"  FontStyle="Normal"
+                            Foreground="{Binding ElementName=UC, Path=WatermarkIconForeground}" FontFamily="{StaticResource FontAwesome5Solid}"
+                           Padding="{Binding ElementName=UC, Path=WatermarkIconPadding}" Visibility="{Binding ElementName=UC, Path=IconVisibility, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock Grid.Column="1" Text="{Binding Watermark, ElementName=UC, UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ElementName=UC, Path=WatermarkForeground}"
+                            Padding="{Binding ElementName=UC, Path=WatermarkPadding}"  FontStyle="{Binding ElementName=UC, Path=FontStyle}" FontWeight="Regular"  />
+        </Grid>
+    </Grid>
+</UserControl>
+

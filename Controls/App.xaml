@@ -6,8 +6,24 @@
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <BooleanToVisibilityConverter  x:Key="BoolToVisConverter" />
-        <FontFamily x:Key="FontAwesome5">pack://application:,,,/Fonts/#Font Awesome 5 Free Solid</FontFamily>
+        <FontFamily x:Key="FontAwesome5">pack://application:,,,/Fonts/#Font Awesome 5 Free Regular</FontFamily>
+        <FontFamily x:Key="FontAwesome5Solid">pack://application:,,,/Fonts/#Font Awesome 5 Free Solid</FontFamily>
 
+        <!--watermark searchbox-->
+        <Style x:Key="SearchBox" TargetType="local:TextBoxWatermark">
+            <Setter Property="Icon" Value="&#xf002;" />
+            <Setter Property="ToolTip" Value="Suche" />
+            <Setter Property="WatermarkIconForeground" Value="LightGray" />
+            <Setter Property="Padding" Value="3" />
+            <Setter Property="WatermarkPadding" Value="3 0 3 0" />
+            <Setter Property="BorderThickness" Value="0 1 0 0" />
+            <Setter Property="BorderBrush" Value="LightGray" />
+            <Setter Property="WatermarkIconPadding" Value="3 2 0 0" />
+            <Setter Property="TextBoxPadding" Value="0 0 0 0" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="FontWeight" Value="Regular" />
+        </Style>
+        
         <!--Combobox-->
         <Style x:Key="ComboBoxToggleButton" TargetType="{x:Type ToggleButton}">
             <Setter Property="OverridesDefaultStyle" Value="true"/>
@@ -227,7 +243,7 @@
             <Setter Property="Background" Value="White"/>
             <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
             <Setter Property="BorderBrush" Value="LightGray"/>
-            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="RowDetailsVisibilityMode" Value="VisibleWhenSelected"/>
             <Setter Property="ScrollViewer.CanContentScroll" Value="true"/>
             <Setter Property="ScrollViewer.PanningMode" Value="Both"/>
@@ -247,13 +263,58 @@
                                             </Grid.ColumnDefinitions>
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
                                                 <RowDefinition Height="*"/>
                                                 <RowDefinition Height="Auto"/>
                                             </Grid.RowDefinitions>
-                                            <DataGridColumnHeadersPresenter x:Name="PART_ColumnHeadersPresenter" Visibility="{Binding HeadersVisibility, ConverterParameter={x:Static DataGridHeadersVisibility.Column}, Converter={x:Static DataGrid.HeadersVisibilityConverter}, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"/>
-                                            <ScrollContentPresenter x:Name="PART_ScrollContentPresenter" CanContentScroll="{TemplateBinding CanContentScroll}" Grid.Row="1" />
-                                            <ScrollBar x:Name="PART_VerticalScrollBar" Grid.Column="1" Grid.Row="1" Maximum="{TemplateBinding ScrollableHeight}" Orientation="Vertical" Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}" Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" ViewportSize="{TemplateBinding ViewportHeight}"/>
-                                            <Grid Grid.Row="2">
+
+                                            <!--Control-Row-->
+                                            <Border BorderThickness="0 0 0 0" BorderBrush="LightGray" Margin="-1 0 0 -1" Padding="5 0 0 0" Background="White">
+                                                <Border.Resources>
+                                                    <Style TargetType="{x:Type Button}">
+                                                        <Setter Property="FontFamily" Value="{StaticResource FontAwesome5Solid}" />
+                                                        <Setter Property="Padding" Value="5" />
+                                                        <Setter Property="Foreground" Value="DarkSlateGray" />
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate TargetType="Button">
+                                                                    <Border TextBlock.Foreground="{TemplateBinding Foreground}" x:Name="Border" BorderThickness="0" Padding="{TemplateBinding Padding}">
+                                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" RecognizesAccessKey="True" />
+                                                                    </Border>
+                                                                    <ControlTemplate.Triggers>
+                                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                                            <Setter Property="TextBlock.Foreground" TargetName="Border" Value="Orange" />
+                                                                        </Trigger>
+                                                                     
+                                                                    </ControlTemplate.Triggers>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </Style>
+                                                </Border.Resources>
+
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto" />
+                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="Auto" />
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <Button Content="&#xf067;" />
+                                                        <Button Content="&#xf068;" />
+                                                        <Button Content="&#xf002;" />
+                                                        <Button Content="&#xf2f1;" />
+                                                    </StackPanel>
+                                                </Grid>
+                                            </Border>
+
+                                            <DataGridColumnHeadersPresenter x:Name="PART_ColumnHeadersPresenter" Grid.Row="1"
+                                                                            Visibility="{Binding HeadersVisibility, ConverterParameter={x:Static DataGridHeadersVisibility.Column}, 
+                                                Converter={x:Static DataGrid.HeadersVisibilityConverter}, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"/>
+                                            <ScrollContentPresenter x:Name="PART_ScrollContentPresenter" CanContentScroll="{TemplateBinding CanContentScroll}" Grid.Row="2" />
+                                            <ScrollBar x:Name="PART_VerticalScrollBar" Grid.Column="1" Grid.Row="2" Maximum="{TemplateBinding ScrollableHeight}" Orientation="Vertical" Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}" Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" ViewportSize="{TemplateBinding ViewportHeight}"/>
+                                            <Grid Grid.Row="3">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="{Binding NonFrozenColumnsViewportHorizontalOffset, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"/>
                                                     <ColumnDefinition Width="*"/>
@@ -282,7 +343,7 @@
 
         <Style TargetType="{x:Type DataGridColumnHeader}">
             <Setter Property="VerticalContentAlignment" Value="Center" />
-            <Setter Property="Height" Value="35" />
+            <!--<Setter Property="Height" Value="35" />-->
             <Setter Property="SeparatorBrush" Value="LightGray" />
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="Template">
@@ -290,26 +351,31 @@
                     <ControlTemplate TargetType="{x:Type DataGridColumnHeader}">
 
                         <Grid>
-                            <Border x:Name="columnHeaderBorder" Cursor="Hand"
-		BorderThickness="0 1 1 1" BorderBrush="LightGray" Background="White"
-		Padding="3,0,3,0">
+                            <Border x:Name="columnHeaderBorder" BorderThickness="0 1 1 1" BorderBrush="LightGray" Background="White" Padding="0">
                                 <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
-                                    <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-			     VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-				SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
 
-                                    <TextBlock FontFamily="{StaticResource FontAwesome5}" Text="&#xf063;" Grid.Column="1" Padding="0 2 2 0"
+                                    <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+				                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" Margin="3 0 2 1" />
+
+                                    <TextBlock FontFamily="{StaticResource FontAwesome5Solid}" Text="&#xf063;" Grid.Column="1" Padding="0 2 3 0" 
                                                VerticalAlignment="Center" FontSize="13" Foreground="Gray" x:Name="ArrowDown" />
 
-                                    <TextBlock FontFamily="{StaticResource FontAwesome5}" Text="&#xf062;" Grid.Column="1" Padding="0 2 2 0"
-                                               VerticalAlignment="Center" FontSize="13" Foreground="Gray" x:Name="ArrowUp" />
+                                    <TextBlock FontFamily="{StaticResource FontAwesome5Solid}" Text="&#xf062;" Grid.Column="1" Padding="0 2 3 0" 
+                                               VerticalAlignment="Center" FontSize="13" Foreground="Gray" x:Name="ArrowUp"  />
+
+                                        <local:TextBoxWatermark Grid.Row="1" Style="{StaticResource SearchBox}" Visibility="{Binding FilterbarVisible, Converter={local:BooleanToVisiblityConverter}, ConverterParameter=Collapsed}"
+                                              Grid.ColumnSpan="2"/>
+
                                 </Grid>
-
-
                             </Border>
 
                             <Thumb x:Name="PART_LeftHeaderGripper"
@@ -332,6 +398,9 @@
                             <Trigger Property="SortDirection" Value="{x:Null}">
                                 <Setter TargetName="ArrowDown" Property="Visibility" Value="Collapsed" />
                                 <Setter TargetName="ArrowUp" Property="Visibility" Value="Collapsed" />
+                            </Trigger>
+                            <Trigger Property="CanUserSort" Value="True">
+                                <Setter TargetName="columnHeaderBorder" Property="Cursor" Value="Hand" />
                             </Trigger>
                             <!--<Trigger Property="IsMouseOver" Value="true">
                                 <Setter TargetName="columnHeaderBorder" Property="Background" Value="LightBlue" />
